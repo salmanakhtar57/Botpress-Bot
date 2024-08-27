@@ -13,7 +13,7 @@
     <script>
         window.botpressWebChat.onEvent(
             (event) => {
-                if (event.type === 'MESSAGE.RECEIVED') { // Corrected to 'RECEIVED'
+                if (event.type === 'MESSAGE.RECEIVED') { // Corrected to 'RECEIVED' 
                     console.log("New message received.");
                     
                     if (event.payload.text === 'You can choose a file') {
@@ -40,7 +40,7 @@
                                 });
                             };
                             
-                            reader.readAsDataURL(file); // Read file as a Data URL (base64)
+                            reader.readAsText(file); // Read file as a Data URL (base64)
                         });
                         
                         fileInput.click(); // Trigger file input dialog
