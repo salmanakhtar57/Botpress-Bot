@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Upload</title>
+</head>
+<body>
+    <script src="https://cdn.botpress.cloud/webchat/v1/inject.js"></script>
+    <script src="https://mediafiles.botpress.cloud/987de53a-1291-4b0a-962c-2f529e725c37/webchat/config.js" defer></script>
+    <script>
+        window.botpressWebChat.onEvent(
+            (event) => {
+                if (event.type === 'MESSAGE.RECIEVED'){
+                    console.log("New message recieved.")
+                    if(event.value.payload.text === 'You can choose a file'){
+                        const fileInput = document.createElement('input');
+                        fileInput.type = 'file';
+                        fileInput.addEventListener('change', (event) => {
+                            const file = event.target.file[0];
+                            console.log('Selected files: ', file);
+                            const reader = new FileReader();
+                            reader.onload = async function (event) {
+                                const fileContent = event.target.result;
+                                const title = file.name;
+                                console.log(fileContent);
+                                console.log(title);
+                                window.botpressWebChat.sendPayload({
+                                    type: 'trigger',
+                                    payload: {
+                                        title: title,
+                                        content: fileContent
+                                    }
+                                })
+                            }
+                            reader.readAsText(file)
+                        })
+                    }
+                }
+            },
+            ['MESSAGE.RECIEVED']
+        )
+    </script>
+    
+</body>
+</html>
