@@ -13,15 +13,14 @@
     <script>
         window.botpressWebChat.onEvent(
             (event) => {
-                if (event.type === 'MESSAGE.RECEIVED') { // Corrected to 'RECEIVED' 
-                    console.log("New message received.");
-                    
+                if (event.type === 'MESSAGE.RECEIVED') {
+                    console.log('A new message was received!')
                     if (event.payload.text === 'You can choose a file') {
                         const fileInput = document.createElement('input');
                         fileInput.type = 'file';
                         
                         fileInput.addEventListener('change', (event) => {
-                            const file = event.target.files[0]; // Corrected to 'files'
+                            const file = event.target.files[0];
                             console.log('Selected file: ', file);
                             
                             const reader = new FileReader();
@@ -34,21 +33,21 @@
                                 window.botpressWebChat.sendPayload({
                                     type: 'trigger',
                                     payload: {
-                                        title: title,
+                                        title: title,   
                                         content: fileContent
                                     }
                                 });
                             };
                             
-                            reader.readAsText(file); // Read file as a Data URL (base64)
+                            reader.readAsText(file);
                         });
                         
-                        fileInput.click(); // Trigger file input dialog
+                        fileInput.click();
                     }
                 }
             },
-            ['MESSAGE.RECEIVED']
-        );
+        ['MESSAGE.RECEIVED']
+    )
     </script>
 </body>
 </html>
