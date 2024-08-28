@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -6,37 +6,10 @@
     <title>Image Upload</title>
 </head>
 <body>
-    <!-- Botpress Webchat Script -->
     <script src="https://cdn.botpress.cloud/webchat/v1/inject.js"></script>
     <script src="https://mediafiles.botpress.cloud/987de53a-1291-4b0a-962c-2f529e725c37/webchat/config.js" defer></script>
     
     <script>
-    //    window.botpressWebChat.onEvent(
-    //     (event) => {
-    //         if (event.type === 'MESSAGE.RECEIVED') {
-    //         console.log('A new message was received!');
-
-    //         // Simple trigger to test Botpress
-    //         if (event.payload.text === 'trigger test') {
-    //             console.log('Triggering custom event');
-
-    //             window.botpressWebChat.sendEvent({
-    //             type: 'custom.trigger',
-    //             payload: {
-    //                 message: 'This is a test trigger from the web chat!',
-    //                 originalMessage: event.payload.text
-    //             }
-    //             });
-
-    //             console.log('Custom trigger event sent');
-    //         }
-    //         }
-    //     },
-    //     ['MESSAGE.RECEIVED']
-    //     );
-
-
-
         window.botpressWebChat.onEvent(
             (event) => {
                 if (event.type === 'MESSAGE.RECEIVED') {
@@ -74,6 +47,76 @@
             },
         ['MESSAGE.RECEIVED']
     )
+    </script>
+</body>
+</html> -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Upload</title>
+</head>
+<body>
+    <!-- Botpress Webchat Script -->
+    <script src="https://cdn.botpress.cloud/webchat/v1/inject.js"></script>
+    <script src="https://mediafiles.botpress.cloud/987de53a-1291-4b0a-962c-2f529e725c37/webchat/config.js" defer></script>
+    
+    <script>
+        window.botpressWebChat.onEvent(
+            (event) => {
+                if (event.type === 'MESSAGE.RECEIVED') {
+                    console.log('A new message was received!');
+                    
+                    if (event.payload.text === 'You can choose a file') {
+                        const fileInput = document.createElement('input');
+                        fileInput.type = 'file';
+
+                        fileInput.addEventListener('change', (event) => {
+                            const file = event.target.files[0];
+                            if (file) {
+                                console.log('Selected file: ', file);
+                                
+                                const reader = new FileReader();
+                                reader.onload = function (event) {
+                                    const fileContent = event.target.result;
+                                    const title = file.name;
+
+                                    console.log('File content: ', fileContent);
+                                    console.log('File name: ', title);
+                                    
+                                    // Send the file data to Botpress
+                                    window.botpressWebChat.sendEvent({
+                                        type: 'custom.fileUpload',
+                                        payload: {
+                                            title: title,   
+                                            content: fileContent
+                                        }
+                                    });
+
+                                    console.log('File uploaded successfully');
+                                };
+                                
+                                // Handle file reading errors
+                                reader.onerror = function (event) {
+                                    console.error('File could not be read: ', event);
+                                };
+
+                                reader.readAsText(file);
+                            } else {
+                                console.error('No file selected.');
+                            }
+                        });
+                        
+                        // Trigger the file input click to open the file dialog
+                        fileInput.click();
+                    }
+                }
+            },
+            ['MESSAGE.RECEIVED']
+        );
     </script>
 </body>
 </html>
