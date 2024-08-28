@@ -66,57 +66,58 @@
     
     <script>
         window.botpressWebChat.onEvent(
-            (event) => {
-                if (event.type === 'MESSAGE.RECEIVED') {
-                    console.log('A new message was received!');
+        (event) => {
+            if (event.type === 'MESSAGE.RECEIVED') {
+                console.log('A new message was received!');
+                
+                if (event.payload.text === 'You can choose a file') {
+                    const fileInput = document.createElement('input');
+                    fileInput.type = 'file';
+
+                    fileInput.addEventListener('change', (event) => {
+                        const file = event.target.files[0];
+                        if (file) {
+                            console.log('Selected file: ', file);
+                            
+                            const reader = new FileReader();
+                            reader.onload = function (event) {
+                                const fileContent = event.target.result;
+                                const title = file.name;
+
+                                console.log('File content: ', fileContent);
+                                console.log('File name: ', title);
+                                
+                                // Send the file data to Botpress using a trigger event
+                                window.botpressWebChat.sendEvent({
+                                    type: 'trigger.fileUpload',  // Use a more descriptive event type
+                                    payload: {
+                                        title: title,   
+                                        content: fileContent
+                                    }
+                                });
+
+                                console.log('File uploaded successfully');
+                            };
+                            
+                            // Handle file reading errors
+                            reader.onerror = function (event) {
+                                console.error('File could not be read: ', event);
+                            };
+
+                            reader.readAsText(file);
+                        } else {
+                            console.error('No file selected.');
+                        }
+                    });
                     
-                    if (event.payload.text === 'You can choose a file') {
-                        const fileInput = document.createElement('input');
-                        fileInput.type = 'file';
-
-                        fileInput.addEventListener('change', (event) => {
-                            const file = event.target.files[0];
-                            if (file) {
-                                console.log('Selected file: ', file);
-                                
-                                const reader = new FileReader();
-                                reader.onload = function (event) {
-                                    const fileContent = event.target.result;
-                                    const title = file.name;
-
-                                    console.log('File content: ', fileContent);
-                                    console.log('File name: ', title);
-                                    
-                                    // Send the file data to Botpress
-                                    window.botpressWebChat.sendEvent({
-                                        type: 'custom.fileUpload',
-                                        payload: {
-                                            title: title,   
-                                            content: fileContent
-                                        }
-                                    });
-
-                                    console.log('File uploaded successfully');
-                                };
-                                
-                                // Handle file reading errors
-                                reader.onerror = function (event) {
-                                    console.error('File could not be read: ', event);
-                                };
-
-                                reader.readAsText(file);
-                            } else {
-                                console.error('No file selected.');
-                            }
-                        });
-                        
-                        // Trigger the file input click to open the file dialog
-                        fileInput.click();
-                    }
+                    // Trigger the file input click to open the file dialog
+                    fileInput.click();
                 }
-            },
-            ['MESSAGE.RECEIVED']
-        );
+            }
+        },
+        ['MESSAGE.RECEIVED']
+    );
+
     </script>
 </body>
 </html>
